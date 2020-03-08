@@ -15,6 +15,3 @@ def func_obj(x):
 	f = -20 * math.exp(f_exp) - math.exp(s_exp) + 20 + math.exp(1)
 
 	return f
-
-x=[0,2,0,5,0,9]
-print(func_obj(x))
