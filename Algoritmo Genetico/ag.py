@@ -22,14 +22,14 @@ class AG():
         parametro1 = []
         parametro2 = []
 
-        # divide o binario em 2 parametros
+        # divide o binario de cada individuo em 2 genes
         for individuo in ag.populacao:
             parametro1.append(individuo[:6])
             parametro2.append(individuo[6:])
 
         genes_individuos = []
 
-        # converte os parametros binarios em float
+        # converte os genes binarios em float
         for p1, p2 in zip(parametro1, parametro2):
             x1 = (float(int(''.join(str(e) for e in p1), 2)))
             x2 = (float(int(''.join(str(e) for e in p2), 2)))
@@ -38,11 +38,12 @@ class AG():
         return genes_individuos
 
     def avaliaPopulacao(self):
+        # aplica a função objetivo para cada individuo da população
         for ind in individuo:
             ind.avaliacao = func_obj([ind.x1, ind.x2])
 
     def torneio(self):
-        print(len(individuo))
+        # 2 individuos duelam, o que possui a maior avaliação na Fo "permanece"
         individuo1 = individuo[randint(0, len(individuo) -1)]
         individuo2 = individuo[randint(0, len(individuo) -1)]
         if individuo1.avaliacao >= individuo2.avaliacao:
