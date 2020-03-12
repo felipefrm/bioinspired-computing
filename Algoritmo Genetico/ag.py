@@ -32,15 +32,11 @@ class AG():
         return individuo
 
     def ajustaParametros(self, individuo):
-
+        # ajusta os parametros para o escopo do campo de busca
         x1_float = float(int(''.join(str(e) for e in individuo.x1), 2))
-        # print("sem ajuste", x1_float)
-        x1 = ag.xmin + ((ag.xmax - ag.xmin)/(pow(2, ag.nbits)-1))*x1_float
-        # print(f"{ag.xmin} + ({ag.xmax - ag.xmin})/(2^{ag.nbits}-1) * {x1_float}")
-        # print("com ajuste", x1)
-
+        x1 = ag.xmin + ((ag.xmax - ag.xmin)/(pow(2, ag.nbits/2)-1))*x1_float
         x2_float = float(int(''.join(str(e) for e in individuo.x2), 2))
-        x2 = ag.xmin + ((ag.xmax - ag.xmin)/(pow(2, ag.nbits)-1))*x2_float
+        x2 = ag.xmin + ((ag.xmax - ag.xmin)/(pow(2, ag.nbits/2)-1))*x2_float
 
         return [x1, x2]
 
@@ -48,27 +44,19 @@ class AG():
         # aplica a função objetivo para cada individuo da população convertendo o binario em float
         for ind in populacao:
             parametro = ag.ajustaParametros(ind)
-            # print(parametro[0])
-            # print(parametro[1])
-
             ind.avaliacao = func_obj([parametro[0], parametro[1]])
 
     def torneio(self, populacao):
-
         # o ultimo individuo não terá adversário, logo é automaticamente escolhido
         if len(populacao) == 1:
             vencedor = populacao[0]
             populacao.remove(populacao[0])
-            # print("sou o ultimo")
             return vencedor
 
         # 2 individuos duelam, o que possui a maior avaliação na Fo "permanece"
-        # print(f"sample: {range(len(populacao))}")
         sorteio = sample(range(len(populacao)), 2)
         individuo1 = populacao[sorteio[0]]
-        # print("peguei o individuo ", sorteio[0])
         individuo2 = populacao[sorteio[1]]
-        # print("peguei o individuo ", sorteio[1])
         if individuo1.avaliacao >= individuo2.avaliacao:
             vencedor = individuo1
             populacao.remove(individuo1)
@@ -78,16 +66,17 @@ class AG():
         return vencedor
 
     def elitismo(self, populacao):
+        # busca o melhor individuo da geração
         avaliacoes = []
         for ind in populacao:
-            avaliacoes.append(ind.avaliacao)
+            avaliacoes.append(abs(ind.avaliacao))
 
         val, idx = min((val, idx) for (idx, val) in enumerate(avaliacoes))
 
         return populacao[idx]
 
     def crossover(self, pai, mae):
-
+        # realiza o cruzamento entre dois individuos
         pai_bin = pai.x1 + pai.x2
         mae_bin = mae.x1 + mae.x2
 
@@ -106,31 +95,26 @@ class AG():
         return filhos
 
     def mutacao(self, populacao):
-
+        # muta um bit aleatorio em uma taxa de 10% dos individuos aproximadamente
         for ind in populacao:
             if randint(0,100) <= ag.taxa_mutacao:
                 ind_bin = ind.x1 + ind.x2
-                # print("Antes  ", ind_bin)
                 bit = randint(0, self.nbits-1)
-                # print(f"vou mudar o bit {bit}")
-                # print(f"transformar {ind_bin[bit]} em {abs(int(ind_bin[bit]) - 1)}")
                 ind_bin[bit] = abs(int(ind_bin[bit]) - 1)
                 ind.x1 = ind_bin[:6]
                 ind.x2 = ind_bin[6:]
-                # print("depois ", ind.x1 + ind.x2)
 
+
+# (tam da população, numero de geracões, taxa mutação, numero de bits por individuo, xmin, xmax)
 ag  = AG(50, 100, 10, 12, -2, 2)
 ag.geraPopulacao()
 nova_populacao = ag.defineIndividuos()
-# print(nova_populacao[0].x1 + nova_populacao[0].x2)
-
-
 
 for geracao in range(ag.num_geracoes):
-    # print("Passei")
     ag.avaliaPopulacao(nova_populacao);
     melhorIndividuo = ag.elitismo(nova_populacao)
-    print(f"Melhor individuo da geração {geracao} -> avaliação: {melhorIndividuo.avaliacao}")
+
+    print(f"Melhor individuo da geração {geracao}  \t->\tFitness: {melhorIndividuo.avaliacao}")
 
     antiga_populacao = nova_populacao
     nova_populacao = []
@@ -140,7 +124,6 @@ for geracao in range(ag.num_geracoes):
         filhos = ag.crossover(pai, mae)
         nova_populacao.extend(filhos)
 
-    # print("POP ", len(nova_populacao))
     nova_populacao.pop(randint(0, len(nova_populacao)-1))
     nova_populacao.append(melhorIndividuo)
     ag.mutacao(nova_populacao)
