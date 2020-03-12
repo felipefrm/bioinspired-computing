@@ -8,9 +8,11 @@ class Individuo():
         self.avaliacao = None
 
 class AG():
-    def __init__(self, tam_populacao, num_geracoes, taxa_mutacao, nbits):
+    def __init__(self, tam_populacao, num_geracoes, taxa_mutacao, nbits, xmin, xmax):
         self.tam_populacao = tam_populacao
         self.nbits = nbits
+        self.xmin = xmin
+        self.xmax = xmax
         self.populacao = None
         self.num_geracoes = num_geracoes
         self.taxa_mutacao = taxa_mutacao
@@ -29,13 +31,27 @@ class AG():
 
         return individuo
 
+    def ajustaParametros(self, individuo):
+
+        x1_float = float(int(''.join(str(e) for e in individuo.x1), 2))
+        # print("sem ajuste", x1_float)
+        x1 = ag.xmin + ((ag.xmax - ag.xmin)/(pow(2, ag.nbits)-1))*x1_float
+        # print(f"{ag.xmin} + ({ag.xmax - ag.xmin})/(2^{ag.nbits}-1) * {x1_float}")
+        # print("com ajuste", x1)
+
+        x2_float = float(int(''.join(str(e) for e in individuo.x2), 2))
+        x2 = ag.xmin + ((ag.xmax - ag.xmin)/(pow(2, ag.nbits)-1))*x2_float
+
+        return [x1, x2]
 
     def avaliaPopulacao(self, populacao):
         # aplica a função objetivo para cada individuo da população convertendo o binario em float
         for ind in populacao:
-            x1_float = float(int(''.join(str(e) for e in ind.x1), 2))
-            x2_float = float(int(''.join(str(e) for e in ind.x2), 2))
-            ind.avaliacao = func_obj([x1_float, x2_float])
+            parametro = ag.ajustaParametros(ind)
+            # print(parametro[0])
+            # print(parametro[1])
+
+            ind.avaliacao = func_obj([parametro[0], parametro[1]])
 
     def torneio(self, populacao):
 
@@ -103,7 +119,7 @@ class AG():
                 ind.x2 = ind_bin[6:]
                 # print("depois ", ind.x1 + ind.x2)
 
-ag  = AG(50, 100, 10, 12)
+ag  = AG(50, 100, 10, 12, -2, 2)
 ag.geraPopulacao()
 nova_populacao = ag.defineIndividuos()
 # print(nova_populacao[0].x1 + nova_populacao[0].x2)
