@@ -114,7 +114,7 @@ for geracao in range(ag.num_geracoes):
     ag.avaliaPopulacao(nova_populacao);
     melhorIndividuo = ag.elitismo(nova_populacao)
 
-    print(f"Melhor individuo da geração {geracao}  \t->\tFitness: {melhorIndividuo.avaliacao}")
+    print(f"Melhor individuo da geração {geracao}\t  ->\tFitness: {melhorIndividuo.avaliacao}")
 
     antiga_populacao = nova_populacao
     nova_populacao = []
