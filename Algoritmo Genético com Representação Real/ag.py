@@ -7,11 +7,13 @@ class Individuo():
         self.fitness = None
 
 class AG():
-    def __init__(self, tam_populacao, num_geracoes, taxa_mutacao, num_genes, xmin, xmax):
+    def __init__(self, tam_populacao, num_geracoes, taxa_mutacao, num_genes, xmin, xmax, alpha, beta):
         self.tam_populacao = tam_populacao
         self.num_genes = num_genes
         self.xmin = xmin
         self.xmax = xmax
+        self.alpha = alpha
+        self.beta = beta
         self.populacao = None
         self.num_geracoes = num_geracoes
         self.taxa_mutacao = taxa_mutacao
@@ -52,7 +54,7 @@ class AG():
                 acumulador += roleta[index]
                 index += 1
 
-            pais.append(roleta[index-1])
+            pais.append(populacao[index-1])
 
         return pais
 
@@ -67,17 +69,34 @@ class AG():
 
         return populacao[idx]
 
-    def crossover(self, x, y):
+    def crossover(self, pais):
         # realiza o cruzamento entre dois individuos
 
-        if y.fitness > x.fitness:
-            aux = y
-            x = y
-            y = aux
+        d = []
+        filho1 = []
+        filho2 = []
+        i = 0
+        cont = 0
+        while i < self.tam_populacao:
+            # print(type(pais[i]))
+            d.append(abs(pais[i].fitness - pais[i+1].fitness))
+            if (pais[i].fitness <= pais[i+1].fitness):
+                # print(f"{pais[i].fitness} - {self.alpha} * {d[cont]}, {pais[i+1].fitness} + {self.beta} * {d[cont]}")
+                filho1.append(uniform(pais[i].fitness - self.alpha * d[cont], pais[i+1].fitness + self.beta * d[cont]))
+                filho2.append(uniform(pais[i].fitness - self.alpha * d[cont], pais[i+1].fitness + self.beta * d[cont]))
+            else:
+                filho1.append(uniform(pais[i+1].fitness - self.beta * d[cont], pais[i].fitness + self.alpha * d[cont]))
+                filho2.append(uniform(pais[i+1].fitness - self.beta * d[cont], pais[i].fitness + self.alpha * d[cont]))
+            cont += 1
+            i += 2
 
-            # NOT TERMINATED
-
+        filhos = filho1 + filho2
         return filhos
+
+        # if y.fitness > x.fitness:
+        #     aux = y
+        #     x = y
+        #     y = aux
 
     def mutacao(self, populacao):
         # muta um bit aleatorio em uma taxa de 10% dos individuos aproximadamente
@@ -87,7 +106,7 @@ class AG():
 
 
 # (tam da população, numero de geracões, taxa mutação, numero de bits por individuo, xmin, xmax)
-ag  = AG(50, 100, 10, 12, -2, 2)
+ag  = AG(50, 100, 10, 12, -2, 2, 0.75, 0.25)
 ag.geraPopulacao()
 nova_populacao = ag.defineIndividuos()
 
@@ -97,13 +116,11 @@ for geracao in range(ag.num_geracoes):
     melhorIndividuo = ag.elitismo(nova_populacao)
 
     pais = ag.roleta(nova_populacao)
-
     print(f"Melhor individuo da geração {geracao}\t  ->\tFitness: {melhorIndividuo.fitness}")
 
     nova_populacao = []
-    while len(nova_populacao) < ag.tam_populacao:
-        filhos = ag.crossover(pais[len(nova_populacao)], pais[len(nova_populacao)+1])
-        nova_populacao.extend(filhos)
+    filhos = ag.crossover(pais)
+    nova_populacao = filhos
 
     nova_populacao.pop(randint(0, len(nova_populacao)-1))
     nova_populacao.append(melhorIndividuo)
