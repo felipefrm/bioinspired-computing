@@ -1,11 +1,11 @@
-from random import randint, sample
+from random import randint, sample, random
 from func_obj import func_obj
 
 class Individuo():
     def __init__(self, x1, x2):
         self.x1 = x1
         self.x2 = x2
-        self.avaliacao = None
+        self.fitness = None
 
 class AG():
     def __init__(self, tam_populacao, num_geracoes, taxa_mutacao, nbits, xmin, xmax):
@@ -23,7 +23,6 @@ class AG():
 
 
     def defineIndividuos(self):
-
         # divide o binario de cada individuo em 2 genes
         individuo = []
         for ind in ag.populacao:
@@ -44,7 +43,7 @@ class AG():
         # aplica a função objetivo para cada individuo da população convertendo o binario em float
         for ind in populacao:
             parametro = ag.ajustaParametros(ind)
-            ind.avaliacao = func_obj([parametro[0], parametro[1]])
+            ind.fitness = func_obj([parametro[0], parametro[1]])
 
     def torneio(self, populacao):
         # o ultimo individuo não terá adversário, logo é automaticamente escolhido
@@ -53,23 +52,33 @@ class AG():
             populacao.remove(populacao[0])
             return vencedor
 
-        # 2 individuos duelam, o que possui a maior avaliação na Fo "permanece"
-        sorteio = sample(range(len(populacao)), 2)
+        # 2 individuos duelam, o que possui a maior avaliação na Fo tem 90% de chance vencer o duelo
+        pv = 0.9    # probabilidade de vitória
+        r = random() 
+
+        sorteio = sample(range(len(populacao)), 2)  # sorteia 2 numeros aleatorios distintos
         individuo1 = populacao[sorteio[0]]
         individuo2 = populacao[sorteio[1]]
-        if individuo1.avaliacao >= individuo2.avaliacao:
+        
+        if individuo1.fitness >= individuo2.fitness:
             vencedor = individuo1
-            populacao.remove(individuo1)
+            if (r < pv):
+                vencedor = individuo2
+            populacao.remove(vencedor)
+        
         else:
             vencedor = individuo2
-            populacao.remove(individuo2)
+            if (r < pv):
+                vencedor = individuo1
+            populacao.remove(vencedor)
+
         return vencedor
 
     def elitismo(self, populacao):
         # busca o melhor individuo da geração
         avaliacoes = []
         for ind in populacao:
-            avaliacoes.append(abs(ind.avaliacao))
+            avaliacoes.append(abs(ind.fitness))
 
         val, idx = min((val, idx) for (idx, val) in enumerate(avaliacoes))
 
@@ -105,25 +114,28 @@ class AG():
                 ind.x2 = ind_bin[6:]
 
 
-# (tam da população, numero de geracões, taxa mutação, numero de bits por individuo, xmin, xmax)
+# AG(tam da população, numero de geracões, taxa mutação, numero de bits por individuo, xmin, xmax)
 ag  = AG(50, 100, 10, 12, -2, 2)
 ag.geraPopulacao()
 nova_populacao = ag.defineIndividuos()
 
 for geracao in range(ag.num_geracoes):
-    ag.avaliaPopulacao(nova_populacao);
+    ag.avaliaPopulacao(nova_populacao)
     melhorIndividuo = ag.elitismo(nova_populacao)
 
-    print(f"Melhor individuo da geração {geracao}\t  ->\tFitness: {melhorIndividuo.avaliacao}")
+    [x1, x2] = ag.ajustaParametros(melhorIndividuo)
+
+    print(f"Melhor individuo da geração {geracao}\t  →\tFitness: {melhorIndividuo.fitness}\t[x1: {x1}, x2: {x2}]")
 
     antiga_populacao = nova_populacao
     nova_populacao = []
+    
     while len(nova_populacao) < ag.tam_populacao:
         pai = ag.torneio(antiga_populacao)
         mae = ag.torneio(antiga_populacao)
         filhos = ag.crossover(pai, mae)
-        nova_populacao.extend(filhos)
-
-    nova_populacao.pop(randint(0, len(nova_populacao)-1))
-    nova_populacao.append(melhorIndividuo)
+        nova_populacao.extend(filhos)   # com excessão do melhor individuo, a nova população é totalmente composta novos individuos
+    
+    individuo_aleatorio = randint(0, len(nova_populacao)-1)  # sorteia um individuo
+    nova_populacao[individuo_aleatorio] = melhorIndividuo    # substitui individuo sorteado pelo melhor individuo
     ag.mutacao(nova_populacao)
