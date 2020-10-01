@@ -8,7 +8,7 @@ class Individuo():
         self.fitness = None
 
 class AG():
-    def __init__(self, tam_populacao, num_geracoes, taxa_mutacao, nbits, xmin, xmax):
+    def __init__(self, tam_populacao, num_geracoes, taxa_mutacao, taxa_cruzamento, prob_vitoria, nbits, xmin, xmax):
         self.tam_populacao = tam_populacao
         self.nbits = nbits
         self.xmin = xmin
@@ -16,6 +16,8 @@ class AG():
         self.populacao = None
         self.num_geracoes = num_geracoes
         self.taxa_mutacao = taxa_mutacao
+        self.taxa_cruzamento = taxa_cruzamento
+        self.prob_vitoria = prob_vitoria
 
     def geraPopulacao(self):
         # gera a populacao de individuos em binarios de 12 bits
@@ -52,23 +54,23 @@ class AG():
             populacao.remove(populacao[0])
             return vencedor
 
-        # 2 individuos duelam, o que possui a maior avaliação na Fo tem 90% de chance vencer o duelo
-        pv = 0.9    # probabilidade de vitória
-        r = random() 
-
         sorteio = sample(range(len(populacao)), 2)  # sorteia 2 numeros aleatorios distintos
         individuo1 = populacao[sorteio[0]]
         individuo2 = populacao[sorteio[1]]
-        
+
+        # 2 individuos duelam, o que possui a maior avaliação na Fo tem maior de chance vencer o duelo
+        # o fator de probabilidade de vitória está guardada no atributo "prob_vitoria" da classe ag
+        r = randint(0, 100)
+
         if individuo1.fitness >= individuo2.fitness:
             vencedor = individuo1
-            if (r < pv):
+            if (r >= ag.prob_vitoria):
                 vencedor = individuo2
             populacao.remove(vencedor)
         
         else:
             vencedor = individuo2
-            if (r < pv):
+            if (r >= ag.prob_vitoria):
                 vencedor = individuo1
             populacao.remove(vencedor)
 
@@ -84,24 +86,30 @@ class AG():
 
         return populacao[idx]
 
-    def crossover(self, pai, mae):
-        # realiza o cruzamento entre dois individuos
-        pai_bin = pai.x1 + pai.x2
-        mae_bin = mae.x1 + mae.x2
+    def crossover(self, pai1, pai2):
 
-        corte = randint(0, ag.nbits)
+        if randint(0, 100) <= ag.taxa_cruzamento:
+            # realiza o cruzamento entre dois individuos
+            pai1_bin = pai1.x1 + pai1.x2
+            pai2_bin = pai2.x1 + pai2.x2
 
-        filhos = []
+            corte = randint(0, ag.nbits)
 
-        filho1_bin = pai_bin[:corte] + mae_bin[corte:]
-        filho1 = Individuo(filho1_bin[:6], filho1_bin[6:])
-        filhos.append(filho1)
+            filhos = []
 
-        filho2_bin = mae_bin[:corte] + pai_bin[corte:]
-        filho2 = Individuo(filho2_bin[:6], filho2_bin[6:])
-        filhos.append(filho2)
+            filho1_bin = pai1_bin[:corte] + pai2_bin[corte:]
+            filho1 = Individuo(filho1_bin[:6], filho1_bin[6:])
+            filhos.append(filho1)
 
-        return filhos
+            filho2_bin = pai2_bin[:corte] + pai1_bin[corte:]
+            filho2 = Individuo(filho2_bin[:6], filho2_bin[6:])
+            filhos.append(filho2)
+            
+            return filhos
+
+        else:
+            return [pai1, pai2]
+
 
     def mutacao(self, populacao):
         # muta um bit aleatorio em uma taxa de 10% dos individuos aproximadamente
@@ -114,8 +122,9 @@ class AG():
                 ind.x2 = ind_bin[6:]
 
 
-# AG(tam da população, numero de geracões, taxa mutação, numero de bits por individuo, xmin, xmax)
-ag  = AG(50, 100, 10, 12, -2, 2)
+
+# AG(tam da população, numero de geracões, taxa mutação, taxa_cruzamento, probabilidade de vitória, numero de bits por individuo, xmin, xmax)
+ag  = AG(50, 100, 10, 100, 90, 12, -2, 2)
 ag.geraPopulacao()
 nova_populacao = ag.defineIndividuos()
 
@@ -131,9 +140,9 @@ for geracao in range(ag.num_geracoes):
     nova_populacao = []
     
     while len(nova_populacao) < ag.tam_populacao:
-        pai = ag.torneio(antiga_populacao)
-        mae = ag.torneio(antiga_populacao)
-        filhos = ag.crossover(pai, mae)
+        pai1 = ag.torneio(antiga_populacao)
+        pai2 = ag.torneio(antiga_populacao)
+        filhos = ag.crossover(pai1, pai2)
         nova_populacao.extend(filhos)   # com excessão do melhor individuo, a nova população é totalmente composta novos individuos
     
     individuo_aleatorio = randint(0, len(nova_populacao)-1)  # sorteia um individuo
