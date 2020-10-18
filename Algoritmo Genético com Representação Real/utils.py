@@ -1,9 +1,13 @@
-def checkEspacoBusca(x, xmin, xmax):
+from time import time
+import os
 
-  if x < xmin:
-    return xmin
+def fileOperations(melhorIndividuo, piorIndividuo, mediaIndividuos, mutacao, cruzamento, populacao, geracoes):
 
-  elif x > xmax:
-    return xmax
+  path = f'files/{mutacao}-{cruzamento}-{populacao}-{geracoes}'
 
-  return x
+  if not os.path.exists(path):
+    os.makedirs(path)
+
+  with open(f'{path}/{int(time())}.txt', "w") as f:
+    for geracao in range(geracoes):
+      f.write(f'{melhorIndividuo[geracao].fitness} {piorIndividuo[geracao].fitness} {mediaIndividuos[geracao]}\n')

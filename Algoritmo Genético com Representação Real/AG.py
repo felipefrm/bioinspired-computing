@@ -1,7 +1,6 @@
 from Individuo import Individuo
 from random import randint, uniform
 from func_obj import func_obj
-from utils import checkEspacoBusca
 
 class AG():
     def __init__(self, tam_populacao, num_geracoes, taxa_mutacao, taxa_cruzamento, num_genes, xmin, xmax, alpha, beta):
@@ -33,19 +32,13 @@ class AG():
 
     def roleta(self, populacao):
 
-        fit_total = sum(1/ind.fitness for ind in populacao)
+        fit_total = sum(abs(1/ind.fitness) for ind in populacao)
         
         roleta = []
         for ind in populacao:
-            # print(f'fitness = {ind.fitness}')
-            roleta.append((1/ind.fitness)/fit_total)
-            # print(f'espaço na roleta = {(1/ind.fitness)/fit_total}')
-
-        # print(sum(roleta))
-
-        roleta.sort(reverse=False)
-
-        # print(roleta)
+            roleta.append((abs(1/ind.fitness))/fit_total)
+    
+        # roleta.sort(reverse=False)
 
         pais = []
         for i in range(self.tam_populacao):
@@ -61,7 +54,7 @@ class AG():
         return pais
 
 
-    def elitismo(self, populacao):
+    def getMelhorIndividuo(self, populacao):
         # busca o melhor individuo da geração
         fitness = []
         for ind in populacao:
@@ -70,6 +63,20 @@ class AG():
         val, idx = min((val, idx) for (idx, val) in enumerate(fitness))
 
         return populacao[idx]
+
+    def getPiorIndividuo(self, populacao):
+        # busca o pior individuo da geração
+        fitness = []
+        for ind in populacao:
+            fitness.append(abs(ind.fitness))
+
+        val, idx = max((val, idx) for (idx, val) in enumerate(fitness))
+
+        return populacao[idx]
+
+    def getMediaIndividuos(self, populacao):    
+        fit_total = sum(abs(ind.fitness) for ind in populacao)
+        return fit_total/len(populacao)
 
     def crossover(self, pais, algoritmo='alpha'):
 
@@ -94,15 +101,8 @@ class AG():
                         filho1.append(uniform(min(pai1.genes[i], pai2.genes[i]) - self.alpha * d[i], max(pai1.genes[i], pai2.genes[i] + self.alpha * d[i])))
                         filho2.append(uniform(min(pai1.genes[i], pai2.genes[i]) - self.alpha * d[i], max(pai1.genes[i], pai2.genes[i] + self.alpha * d[i])))                   
 
-                        checkEspacoBusca(filho1[i], self.xmin, self.xmax)
-                        checkEspacoBusca(filho2[i], self.xmin, self.xmax)
-
-
-                    # print(f'pais = {pai1.genes, pai2.genes}')
-                    # print(f'filhos = {filho1, filho2}')
-
-                    # print(f'pais = {pai1.fitness, pai2.fitness}')
-                    # print(f'filhos = {func_obj(filho1), func_obj(filho2)}')
+                        self.checkEspacoBusca(filho1[i])
+                        self.checkEspacoBusca(filho2[i])
 
                     filhos.extend([Individuo(filho1), Individuo(filho2)])
                                     
@@ -134,8 +134,8 @@ class AG():
                             filho1.append(uniform(pai2.genes[i] - self.beta * d[i], pai1.genes[i] + self.alpha * d[i]))
                             filho2.append(uniform(pai2.genes[i] - self.beta * d[i], pai1.genes[i] + self.alpha * d[i]))
 
-                        checkEspacoBusca(filho1[i], self.xmin, self.xmax)
-                        checkEspacoBusca(filho2[i], self.xmin, self.xmax)
+                        self.checkEspacoBusca(filho1[i], self.xmin, self.xmax)
+                        self.checkEspacoBusca(filho2[i], self.xmin, self.xmax)
 
                     filhos.extend([Individuo(filho1), Individuo(filho2)])
 
@@ -146,6 +146,12 @@ class AG():
         
         return filhos
 
+    def checkEspacoBusca(self, x):
+        if x < self.xmin:
+            return self.xmin
+        elif x > self.xmax:
+            return self.xmax
+        return x
 
     def mutacao(self, populacao):
         for ind in populacao:
