@@ -1,7 +1,7 @@
 # AG(tamanho da populacao, numero de geracoes, taxa de mutacao, taxa de cruzamento, numero de genes, xmin, xmax, alpha, beta)
 from AG import *
 
-ag  = AG(50, 100, 10, 100, 2, -2, 2, 0.75, 0.25)
+ag  = AG(50, 100, 10, 100, 2, -2, 2, 0.5, 0.25)
 populacao_inicial = ag.geraPopulacao()
 populacao_atual = ag.defineIndividuos(populacao_inicial)
 

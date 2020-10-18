@@ -1,6 +1,7 @@
 from Individuo import Individuo
 from random import randint, uniform
 from func_obj import func_obj
+from utils import checkEspacoBusca
 
 class AG():
     def __init__(self, tam_populacao, num_geracoes, taxa_mutacao, taxa_cruzamento, num_genes, xmin, xmax, alpha, beta):
@@ -26,7 +27,7 @@ class AG():
         return individuo
 
     def fitPopulacao(self, populacao):
-        # aplica a função objetivo para cada individuo da população convertendo o binario em float
+        # aplica a função objetivo para cada individuo da população
         for ind in populacao:
             ind.fitness = func_obj([ind.genes[0], ind.genes[1]])
 
@@ -41,6 +42,10 @@ class AG():
             # print(f'espaço na roleta = {(1/ind.fitness)/fit_total}')
 
         # print(sum(roleta))
+
+        roleta.sort(reverse=False)
+
+        # print(roleta)
 
         pais = []
         for i in range(self.tam_populacao):
@@ -79,14 +84,26 @@ class AG():
             while cont < self.tam_populacao:
                 pai1 = pais[cont]                       
                 pai2 = pais[cont+1]
+                filho1.clear()
+                filho2.clear()
 
                 if randint(0, 100) <= self.taxa_cruzamento: # realiza o cruzamento entre dois individuos 
                                                             # gerando dois novos individuos
                     for i in range(self.num_genes):         
                         d.append(abs(pai1.genes[i] - pai2.genes[i]))
                         filho1.append(uniform(min(pai1.genes[i], pai2.genes[i]) - self.alpha * d[i], max(pai1.genes[i], pai2.genes[i] + self.alpha * d[i])))
-                        filho2.append(uniform(min(pai1.genes[i], pai2.genes[i]) - self.alpha * d[i], max(pai1.genes[i], pai2.genes[i] + self.alpha * d[i])))
-                    
+                        filho2.append(uniform(min(pai1.genes[i], pai2.genes[i]) - self.alpha * d[i], max(pai1.genes[i], pai2.genes[i] + self.alpha * d[i])))                   
+
+                        checkEspacoBusca(filho1[i], self.xmin, self.xmax)
+                        checkEspacoBusca(filho2[i], self.xmin, self.xmax)
+
+
+                    # print(f'pais = {pai1.genes, pai2.genes}')
+                    # print(f'filhos = {filho1, filho2}')
+
+                    # print(f'pais = {pai1.fitness, pai2.fitness}')
+                    # print(f'filhos = {func_obj(filho1), func_obj(filho2)}')
+
                     filhos.extend([Individuo(filho1), Individuo(filho2)])
                                     
                 else: # os pais vão para a próxima geração
@@ -117,6 +134,9 @@ class AG():
                             filho1.append(uniform(pai2.genes[i] - self.beta * d[i], pai1.genes[i] + self.alpha * d[i]))
                             filho2.append(uniform(pai2.genes[i] - self.beta * d[i], pai1.genes[i] + self.alpha * d[i]))
 
+                        checkEspacoBusca(filho1[i], self.xmin, self.xmax)
+                        checkEspacoBusca(filho2[i], self.xmin, self.xmax)
+
                     filhos.extend([Individuo(filho1), Individuo(filho2)])
 
                 else:
@@ -129,9 +149,6 @@ class AG():
 
     def mutacao(self, populacao):
         for ind in populacao:
-            # print('novo individuo')
             if randint(0,100) <= self.taxa_mutacao:
                 indice = randint(0, 1)
-                # print(f'meu gene antigo = {ind.genes[indice]}')
                 ind.genes[indice] = uniform(self.xmin, self.xmax)
-                # print(f'meu gene novo = {ind.genes[indice]}')
