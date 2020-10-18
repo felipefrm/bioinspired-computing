@@ -3,6 +3,8 @@ import matplotlib.pyplot as plt
 import numpy as np
 import os
 
+
+# LE OS ARQUIVOS, AGRUPA OS DADOS E TIRA AS MEDIAS
 filesData = []
 
 for filename in os.listdir(f'{os.getcwd()}/files/{argv[1]}'):
@@ -25,5 +27,10 @@ for geracao in range(len(filesData[0])):
     sumArray[geracao][data] = soma/len(filesData)
     soma = 0
   
-plt.imshow(sumArray)
+
+# PLOTA O GRAFICO
+fig = plt.figure(figsize=(6, 3.2))
+plt.yticks(np.arange(0, 10, 0.75))
+plt.plot(sumArray)
+plt.legend(['Melhor Indivíduo', 'Pior Indivíduo', 'Média dos Indivíduos'], loc='upper right', fontsize='xx-small')
 plt.show()

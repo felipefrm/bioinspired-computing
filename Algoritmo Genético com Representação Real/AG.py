@@ -134,8 +134,8 @@ class AG():
                             filho1.append(uniform(pai2.genes[i] - self.beta * d[i], pai1.genes[i] + self.alpha * d[i]))
                             filho2.append(uniform(pai2.genes[i] - self.beta * d[i], pai1.genes[i] + self.alpha * d[i]))
 
-                        self.checkEspacoBusca(filho1[i], self.xmin, self.xmax)
-                        self.checkEspacoBusca(filho2[i], self.xmin, self.xmax)
+                        self.checkEspacoBusca(filho1[i])
+                        self.checkEspacoBusca(filho2[i])
 
                     filhos.extend([Individuo(filho1), Individuo(filho2)])
 

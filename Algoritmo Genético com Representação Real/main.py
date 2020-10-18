@@ -4,7 +4,7 @@ from utils import fileOperations
 from AG import *
 
 # AG(tamanho da populacao, numero de geracoes, taxa de mutacao, taxa de cruzamento, numero de genes, xmin, xmax, alpha, beta)
-ag  = AG(50, 100, 10, 100, 2, -2, 2, 0.5, 0.25)
+ag  = AG(50, 100, 10, 100, 2, -2, 2, 0.75, 0.25)
 populacao_inicial = ag.geraPopulacao()
 populacao_atual = ag.defineIndividuos(populacao_inicial)
 
@@ -26,7 +26,7 @@ for geracao in range(ag.num_geracoes):
     print(f"Media da geração {geracao}\t\t  ->\tFitness: {mediaIndividuos[geracao]}\n")
     
     populacao_atual = []
-    filhos = ag.crossover(pais, 'alpha')
+    filhos = ag.crossover(pais, 'alphabeta')
     populacao_atual = filhos
 
     ag.mutacao(populacao_atual)
