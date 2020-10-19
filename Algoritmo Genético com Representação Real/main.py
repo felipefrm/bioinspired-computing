@@ -32,5 +32,3 @@ for geracao in range(ag.num_geracoes):
     ag.mutacao(populacao_atual)
     populacao_atual.pop(randint(0, len(populacao_atual)-1))
     populacao_atual.append(melhorIndividuo[geracao])
-
-fileOperations(melhorIndividuo, piorIndividuo, mediaIndividuos, ag.taxa_mutacao, ag.taxa_cruzamento, ag.tam_populacao, ag.num_geracoes)
