@@ -38,6 +38,7 @@ class AG():
         for ind in populacao:
             roleta.append((abs(1/ind.fitness))/fit_total)
 
+
         pais = []
         for i in range(self.tam_populacao):
 
@@ -98,8 +99,8 @@ class AG():
                 else:
                     pai2 = pais[cont+1]
 
-                filho1.clear()
-                filho2.clear()
+                filho1 = []
+                filho2 = []
 
                 if randint(0, 100) <= self.taxa_cruzamento: # realiza o cruzamento entre dois individuos 
                                                             # gerando dois novos individuos
@@ -132,6 +133,9 @@ class AG():
                         pai2 = pais[cont+1]
                 else:
                     pai2 = pais[cont+1]
+
+                filho1 = []
+                filho2 = []
 
                 if randint(0, 100) <= self.taxa_cruzamento: # realiza o cruzamento entre dois individuos 
             

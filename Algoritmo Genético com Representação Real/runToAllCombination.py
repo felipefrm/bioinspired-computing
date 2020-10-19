@@ -12,7 +12,6 @@ def runToAllCombination():
         for cruzamento in cruzamentoArray:
             for populacao in populacaoArray:
                 for geracoes in geracoesArray:
-
                     for execution in range(20):
         
                     # AG(tamanho da populacao, numero de geracoes, taxa de mutacao, taxa de cruzamento, numero de genes, xmin, xmax, alpha, beta)
@@ -20,16 +19,12 @@ def runToAllCombination():
                         populacao_inicial = ag.geraPopulacao()
                         populacao_atual = ag.defineIndividuos(populacao_inicial)
 
-                        melhorIndividuo = []
-                        piorIndividuo = []
-                        mediaIndividuos = []
-
                         for geracao in range(ag.num_geracoes):
 
                             ag.fitPopulacao(populacao_atual)
-                            melhorIndividuo.append(ag.getMelhorIndividuo(populacao_atual))
-                            piorIndividuo.append(ag.getPiorIndividuo(populacao_atual))
-                            mediaIndividuos.append(ag.getMediaIndividuos(populacao_atual))
+                            melhorIndividuo = (ag.getMelhorIndividuo(populacao_atual))
+                            piorIndividuo = (ag.getPiorIndividuo(populacao_atual))
+                            mediaIndividuos = (ag.getMediaIndividuos(populacao_atual))
 
                             pais = ag.roleta(populacao_atual)
 
@@ -39,6 +34,6 @@ def runToAllCombination():
 
                             ag.mutacao(populacao_atual)
                             populacao_atual.pop(randint(0, len(populacao_atual)-1))
-                            populacao_atual.append(melhorIndividuo[geracao])
+                            populacao_atual.append(melhorIndividuo)
 
-                        fileOperations(melhorIndividuo, piorIndividuo, mediaIndividuos, filesFolderName, ag.taxa_mutacao, ag.taxa_cruzamento, ag.tam_populacao, ag.num_geracoes, execution)
+                            fileOperations(melhorIndividuo, piorIndividuo, mediaIndividuos, filesFolderName, ag.taxa_mutacao, ag.taxa_cruzamento, ag.tam_populacao, ag.num_geracoes, execution)

@@ -5,6 +5,6 @@ def fileOperations(melhorIndividuo, piorIndividuo, mediaIndividuos, folder, muta
 
   path = f'{folder}/{mutacao}-{cruzamento}-{populacao}-{geracoes}'
 
-  with open(f'{path}/{count}.txt', "w") as f:
-    for geracao in range(geracoes):
-      f.write(f'{melhorIndividuo[geracao].fitness} {piorIndividuo[geracao].fitness} {mediaIndividuos[geracao]}\n')
+  with open(f'{path}/{count}.txt', "a") as f:
+
+    f.write(f'{melhorIndividuo.fitness} {piorIndividuo.fitness} {mediaIndividuos}\n')

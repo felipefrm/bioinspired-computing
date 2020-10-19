@@ -6,8 +6,8 @@ import os
 from params import *
 
 def createGraphs():
-
-  if not os.path.exists(graphFolderName):
+  
+  if not os.path.exists(graphFolderName):  
     os.makedirs(graphFolderName)
 
   cont = 1
@@ -23,8 +23,8 @@ def createGraphs():
                 
                 folder = f'{mutacao}-{cruzamento}-{populacao}-{geracoes}' 
 
-                for filename in os.listdir(f'{os.getcwd()}/files/{folder}'):
-                  with open(os.path.join(f'{os.getcwd()}/files/{folder}', filename), 'r') as f:
+                for filename in os.listdir(f'{os.getcwd()}/{filesFolderName}/{folder}'):
+                  with open(os.path.join(f'{os.getcwd()}/{filesFolderName}/{folder}', filename), 'r') as f:
                     arrayLines = []
                     for lines in f:
                       lines = lines.split(' ')
