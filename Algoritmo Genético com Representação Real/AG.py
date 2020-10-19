@@ -37,8 +37,6 @@ class AG():
         roleta = []
         for ind in populacao:
             roleta.append((abs(1/ind.fitness))/fit_total)
-    
-        # roleta.sort(reverse=False)
 
         pais = []
         for i in range(self.tam_populacao):
