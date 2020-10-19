@@ -89,8 +89,17 @@ class AG():
         if algoritmo == 'alpha':
             
             while cont < self.tam_populacao:
-                pai1 = pais[cont]                       
-                pai2 = pais[cont+1]
+      
+                pai1 = pais[cont]
+
+                if self.tam_populacao % 2:
+                    if cont == self.tam_populacao-1:
+                        pai2 = pais[0]
+                    else:
+                        pai2 = pais[cont+1]
+                else:
+                    pai2 = pais[cont+1]
+
                 filho1.clear()
                 filho2.clear()
 
@@ -115,8 +124,16 @@ class AG():
         elif algoritmo == 'alphabeta':
 
             while cont < self.tam_populacao:
+
                 pai1 = pais[cont]
-                pai2 = pais[cont+1]
+                
+                if self.tam_populacao % 2:
+                    if cont == self.tam_populacao-1:
+                        pai2 = pais[0]
+                    else:
+                        pai2 = pais[cont+1]
+                else:
+                    pai2 = pais[cont+1]
 
                 if randint(0, 100) <= self.taxa_cruzamento: # realiza o cruzamento entre dois individuos 
             
