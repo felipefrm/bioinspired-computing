@@ -3,7 +3,7 @@ from random import randint, uniform
 from func_obj import func_obj
 
 class AG():
-    def __init__(self, tam_populacao, num_geracoes, taxa_mutacao, taxa_cruzamento, num_genes, xmin, xmax, alpha, beta):
+    def __init__(self, tam_populacao, num_geracoes, taxa_mutacao, taxa_cruzamento, num_genes, xmin, xmax, alpha, beta, algoritmo):
         self.tam_populacao = tam_populacao
         self.num_genes = num_genes
         self.xmin = xmin
@@ -13,6 +13,7 @@ class AG():
         self.num_geracoes = num_geracoes
         self.taxa_mutacao = taxa_mutacao
         self.taxa_cruzamento = taxa_cruzamento
+        self.algoritmo = algoritmo
 
     def geraPopulacao(self):
         populacao = [[uniform(self.xmin, self.xmax) for x in range(self.num_genes)] for y in range(self.tam_populacao)]
@@ -77,7 +78,7 @@ class AG():
         fit_total = sum(abs(ind.fitness) for ind in populacao)
         return fit_total/len(populacao)
 
-    def crossover(self, pais, algoritmo='alpha'):
+    def crossover(self, pais):
 
         d = []
         filhos = []
@@ -85,7 +86,7 @@ class AG():
         filho2 = []
         cont = 0
 
-        if algoritmo == 'alpha':
+        if self.algoritmo == 'alpha':
             
             while cont < self.tam_populacao:
       
@@ -120,7 +121,7 @@ class AG():
                 cont += 2
 
 
-        elif algoritmo == 'alphabeta':
+        elif self.algoritmo == 'alphabeta':
 
             while cont < self.tam_populacao:
 

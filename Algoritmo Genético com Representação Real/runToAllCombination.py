@@ -15,7 +15,7 @@ def runToAllCombination():
                     for execution in range(20):
         
                     # AG(tamanho da populacao, numero de geracoes, taxa de mutacao, taxa de cruzamento, numero de genes, xmin, xmax, alpha, beta)
-                        ag  = AG(int(populacao), int(geracoes), int(mutacao), int(cruzamento), 2, -2, 2, 0.75, 0.25)
+                        ag  = AG(int(populacao), int(geracoes), int(mutacao), int(cruzamento), 2, -2, 2, 0.75, 0.25, 'alphabeta')
                         populacao_inicial = ag.geraPopulacao()
                         populacao_atual = ag.defineIndividuos(populacao_inicial)
 
@@ -29,7 +29,7 @@ def runToAllCombination():
                             pais = ag.roleta(populacao_atual)
 
                             populacao_atual = []
-                            filhos = ag.crossover(pais, 'alphabeta')
+                            filhos = ag.crossover(pais)
                             populacao_atual = filhos
 
                             ag.mutacao(populacao_atual)
