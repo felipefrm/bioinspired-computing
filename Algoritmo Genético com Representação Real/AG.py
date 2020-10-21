@@ -175,6 +175,6 @@ class AG():
 
     def mutacao(self, populacao):
         for ind in populacao:
-            if randint(0,100) <= self.taxa_mutacao:
-                indice = randint(0, 1)
-                ind.genes[indice] = uniform(self.xmin, self.xmax)
+            for indice in range(self.num_genes):
+                if randint(0,100) <= self.taxa_mutacao:
+                    ind.genes[indice] = uniform(self.xmin, self.xmax)

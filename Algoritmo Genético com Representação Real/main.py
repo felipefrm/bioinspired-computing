@@ -4,7 +4,7 @@ from utils import fileOperations
 from AG import *
 
 # AG(tamanho da populacao, numero de geracoes, taxa de mutacao, taxa de cruzamento, numero de genes, xmin, xmax, alpha, beta)
-ag  = AG(10, 100, 10, 60, 2, -2, 2, 0.75, 0.25, 'alphabeta')
+ag  = AG(100, 100, 50, 100, 2, -2, 2, 0.75, 0.25, 'alphabeta')
 populacao_inicial = ag.geraPopulacao()
 populacao_atual = ag.defineIndividuos(populacao_inicial)
 
