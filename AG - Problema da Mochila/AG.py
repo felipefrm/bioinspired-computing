@@ -1,5 +1,6 @@
 from random import randint, sample, random
 from Individuo import Individuo
+from func_obj import func_obj
 
 class AG():
     def __init__(self, tam_populacao, num_geracoes, taxa_mutacao, taxa_cruzamento, prob_vitoria, nbits):
@@ -11,11 +12,6 @@ class AG():
         self.taxa_cruzamento = taxa_cruzamento
         self.prob_vitoria = prob_vitoria
 
-    # def defineIndividuos(self, populacao):
-    #     individuo = []
-    #     for ind in populacao:
-    #         individuo.append(Individuo(ind))
-    #     return individuo
 
     def geraPopulacao(self):
         # gera a populacao de individuos em binarios de nbits
@@ -25,26 +21,10 @@ class AG():
             individuo.append(Individuo(ind))
         return individuo
 
-    def calculaFo(self, solucao, mochila):
-
-        utilidade = peso = 0
-
-        for i in range(mochila.qtd_obj):
-            if (solucao[i]):
-                utilidade += mochila.utilidade[i]
-                peso += mochila.peso[i]
-
-        if peso <= mochila.capacidade:
-            fitness = utilidade
-        else:
-            fitness = utilidade * (1 - (peso - mochila.capacidade)/mochila.capacidade)
-
-        return fitness
-
     def avaliaPopulacao(self, populacao, mochila):
         # aplica a função objetivo para cada individuo da população convertendo o binario em float
         for ind in populacao:
-            ind.fitness = calculaFo(ind.solucao, mochila)
+            (ind.fitness, ind.viavel) = func_obj(ind.solucao, mochila)
 
     def torneio(self, populacao):
         # o ultimo individuo não terá adversário, logo é automaticamente escolhido
@@ -79,9 +59,17 @@ class AG():
         # busca o melhor individuo da geração
         avaliacoes = []
         for ind in populacao:
-            avaliacoes.append(abs(ind.fitness))
+            avaliacoes.append(ind.fitness)
 
-        val, idx = min((val, idx) for (idx, val) in enumerate(avaliacoes))
+        val, idx = max((val, idx) for (idx, val) in enumerate(avaliacoes))
+        melhorIndividuo = populacao[idx]
+
+        for i in range(self.tam_populacao):
+            val, idx = max((val, idx) for (idx, val) in enumerate(avaliacoes))
+            if populacao[idx].viavel:
+                melhorIndividuo = populacao[idx]
+            else:
+                avaliacoes[idx] = 0
 
         return populacao[idx]
 
@@ -111,8 +99,5 @@ class AG():
         # muta um bit aleatorio em uma taxa de 10% dos individuos aproximadamente
         for ind in populacao:
             if randint(0,100) <= self.taxa_mutacao:
-                ind_bin = ind.x1 + ind.x2
                 bit = randint(0, self.nbits-1)
-                ind_bin[bit] = abs(int(ind_bin[bit]) - 1)
-                ind.x1 = ind_bin[:6]
-                ind.x2 = ind_bin[6:]
+                ind.solucao[bit] = abs(int(ind.solucao[bit]) - 1)

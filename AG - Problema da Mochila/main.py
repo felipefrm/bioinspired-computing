@@ -1,20 +1,25 @@
+from sys import argv
 from AG import *
 from Mochila import *
 from utils import *
 
-(c, p, u, s) = leArquivos("01")
+if (len(argv) < 2):
+    instancia = '05'
+else:
+    instancia = argv[1] # instancia vinda por terminal
+(c, p, u, s) = leArquivos(instancia)
 qtd_obj = quantidadeObjetos(p)
 mochila = Mochila(qtd_obj, c, p, u, s)
 
 # AG(tam da população, numero de geracões, taxa mutação, taxa_cruzamento, probabilidade de vitória, numero de bits por individuo)
-ag  = AG(50, 100, 10, 100, 90, qtd_obj)
+ag  = AG(50, 100, 5, 100, 90, qtd_obj)
 nova_populacao = ag.geraPopulacao()
 
 for geracao in range(ag.num_geracoes):
     ag.avaliaPopulacao(nova_populacao, mochila)
     melhorIndividuo = ag.elitismo(nova_populacao)
 
-    print(f"Melhor individuo da geração {geracao}\t  →\tFitness: {melhorIndividuo.fitness}\tSolucão: {melhorIndividuo.solucao}]")
+    print(f"Melhor individuo da geração {geracao}\t  →\tFitness: {melhorIndividuo.fitness}\tViavel? {melhorIndividuo.viavel}\tSolucão: {melhorIndividuo.solucao}]")
 
     antiga_populacao = nova_populacao
     nova_populacao = []
