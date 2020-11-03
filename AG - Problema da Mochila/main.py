@@ -7,29 +7,33 @@ if (len(argv) < 2):
     instancia = '05'
 else:
     instancia = argv[1] # instancia vinda por terminal
+
 (c, p, u, s) = leArquivos(instancia)
 qtd_obj = quantidadeObjetos(p)
 mochila = Mochila(qtd_obj, c, p, u, s)
 
-# AG(tam da população, numero de geracões, taxa mutação, taxa_cruzamento, probabilidade de vitória, numero de bits por individuo)
-ag  = AG(50, 100, 5, 100, 90, qtd_obj)
+# AG(tam da população, numero de geracões, taxa mutação, taxa_cruzamento, probabilidade de vitória, numero de bits por individuo, com ou sem elitismo)
+ag  = AG(50, 100, 5, 100, 90, qtd_obj, True)
 nova_populacao = ag.geraPopulacao()
 
 for geracao in range(ag.num_geracoes):
     ag.avaliaPopulacao(nova_populacao, mochila)
-    melhorIndividuo = ag.elitismo(nova_populacao)
+    melhorIndividuo = ag.getMelhorIndividuo(nova_populacao)
 
     print(f"Melhor individuo da geração {geracao}\t  →\tFitness: {melhorIndividuo.fitness}\tViavel? {melhorIndividuo.viavel}\tSolucão: {melhorIndividuo.solucao}]")
 
-    antiga_populacao = nova_populacao
+    populacao_atual = nova_populacao
     nova_populacao = []
-    
+
     while len(nova_populacao) < ag.tam_populacao:
-        pai1 = ag.torneio(antiga_populacao)
-        pai2 = ag.torneio(antiga_populacao)
+        pai1 = ag.torneio(populacao_atual)
+        pai2 = ag.torneio(populacao_atual)
         filhos = ag.crossover(pai1, pai2)
         nova_populacao.extend(filhos)   # com excessão do melhor individuo, a nova população é totalmente composta novos individuos
     
-    individuo_aleatorio = randint(0, len(nova_populacao)-1)  # sorteia um individuo
-    nova_populacao[individuo_aleatorio] = melhorIndividuo    # substitui individuo sorteado pelo melhor individuo
     ag.mutacao(nova_populacao)
+    
+    if (ag.elitismo):
+        individuo_aleatorio = randint(0, len(nova_populacao)-1)  # sorteia um individuo
+        nova_populacao[individuo_aleatorio] = melhorIndividuo    # substitui individuo sorteado pelo melhor individuo
+    
