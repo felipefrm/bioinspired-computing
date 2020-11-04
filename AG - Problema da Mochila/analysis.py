@@ -15,12 +15,9 @@ populacaoArray = [25, 50, 100]
 geracoesArray = [25, 50, 100]
 elitismoArray = [True, False]
 instanciaArray = ['01', '02', '03', '04', '05', '06', '07', '08']
-# instanciaArray = ['08']
-
 
 filesFolderName = 'files'
 graphFolderName = 'graphs'
-
 
 def fileOperations(melhorIndividuo, piorIndividuo, mediaIndividuos, folder, instancia, elitismo, mutacao, cruzamento, populacao, geracoes, count):
 
@@ -32,17 +29,26 @@ def fileOperations(melhorIndividuo, piorIndividuo, mediaIndividuos, folder, inst
         f.write(f'{melhorIndividuo.fitness} {piorIndividuo.fitness} {mediaIndividuos}\n')
 
 
-def runToAllCombinations():
-
+def createFolders():
+    # cria a pasta de arquivos
     if os.path.exists(filesFolderName):
         shutil.rmtree(filesFolderName)
     os.makedirs(filesFolderName)
 
+    # cria a pasta de graficos
     if not os.path.exists(graphFolderName):  
         os.makedirs(graphFolderName)
+        #dentro da past de graficos, cria uma pasta para cada instancia
+        os.chdir(graphFolderName)
+        for dir in instanciaArray:
+            os.mkdir(dir)
+        os.chdir('../')
+
+def runToAllCombinations():
+
+    createFolders()
 
     mediaFitness = []
-
     for instancia in instanciaArray:
         for elitismo in elitismoArray:
             for mutacao in mutacaoArray:
@@ -137,17 +143,17 @@ def runToAllCombinations():
                             fig = plt.figure(figsize=(8, 4))
                             fig.suptitle(folder)
                             plt.axhline(y=otimo, linewidth=0.5, color='r', linestyle='--')
-                            # plt.yticks(np.arange(dados.min(), dados.max()))
                             plt.xlabel('gerações')
                             plt.ylabel('fitness')
                             plt.plot(dados)
                             plt.legend(['Solução Ótima', 'Melhor Indivíduo', 'Pior Indivíduo', 'Média dos Indivíduos'], loc='lower right', fontsize='xx-small')
-                            # plt.show()
-                            fig.savefig(f'{graphFolderName}/{folder}.png', dpi=fig.dpi)
+                            fig.savefig(f'{graphFolderName}/{instancia}/{folder}.png', dpi=fig.dpi)
 
-    mediaFitness = sorted(mediaFitness, key=lambda x: x[1])
-    with open('fitnessTable.txt', 'w') as f:
-        for item in mediaFitness[::-1]:
-            f.write(f'{item[0]}\t\t{item[1]}\n')
+      
+        mediaFitness = sorted(mediaFitness, key=lambda x: x[1])
+        with open(f'{filesFolderName}/{instancia}fitness.txt', 'w') as f:
+            for item in mediaFitness[::-1]:
+                f.write(f'{item[0]}\t\t{item[1]}\n')
+        mediaFitness = []
 
 runToAllCombinations()
