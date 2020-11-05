@@ -1,4 +1,4 @@
-##### 1. Para executar o algoritmo genético com alguma das instâncias:
+#### 1. Para executar o algoritmo genético com alguma das instâncias:
 Instâncias disponíveis: 01, 02, 03, 04, 05, 06, 07, 08
 ```
 $ python3 main.py [número da instância]
@@ -9,7 +9,7 @@ $ python3 main.py 05
 ```
 
 
-##### 2. Para executar o experimento fatorial completo:
+#### 2. Para executar o experimento fatorial completo:
 ```
 $ python3 analysis.py
 ```
