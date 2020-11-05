@@ -26,30 +26,6 @@ class AG():
         for ind in populacao:
             (ind.fitness, ind.viavel) = func_obj(ind.solucao, mochila)
 
-    def roleta(self, populacao):
-
-        fit_total = sum(ind.fitness for ind in populacao)
-        
-        roleta = []
-        for ind in populacao:
-            roleta.append(ind.fitness/fit_total)
-
-        pais = []
-
-        for i in range(self.tam_populacao):
-            print(roleta[i])
-            r = uniform(0, 1)
-            acumulador = index = 0
-            while (acumulador < r):
-                acumulador += roleta[index]
-                index += 1
-
-            pais.append(populacao[index-1])
-
-        print(sum(roleta), "\n")
-
-        return pais
-        
 
     def torneio(self, populacao):
         # o ultimo individuo não terá adversário, logo é automaticamente escolhido

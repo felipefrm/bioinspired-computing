@@ -22,7 +22,6 @@ graphFolderName = 'graphs'
 def fileOperations(melhorIndividuo, piorIndividuo, mediaIndividuos, folder, instancia, elitismo, mutacao, cruzamento, populacao, geracoes, count):
 
     path = f'{folder}/{instancia}-{elitismo}-{mutacao}-{cruzamento}-{populacao}-{geracoes}'
-#   path = f'{folder}/{elitismo}-{mutacao}-{cruzamento}-{populacao}-{geracoes}'
 
     with open(f'{path}/{count}.txt', "a") as f:
 
@@ -57,7 +56,6 @@ def runToAllCombinations():
                         for geracoes in geracoesArray:
                             print(f'{instancia}-{elitismo}-{mutacao}-{cruzamento}-{populacao}-{geracoes}')
                             path = f'{filesFolderName}/{instancia}-{elitismo}-{mutacao}-{cruzamento}-{populacao}-{geracoes}'
-                            # path = f'{filesFolderName}/{elitismo}-{mutacao}-{cruzamento}-{populacao}-{geracoes}'
                             os.makedirs(path)
                             for execution in range(20):
                                 (c, p, u, s) = leArquivos(instancia)
@@ -80,7 +78,7 @@ def runToAllCombinations():
                                     while len(nova_populacao) < ag.tam_populacao: 
                                         pai1 = ag.torneio(populacao_atual)
                                         if (ag.tam_populacao % 2 != 0 and len(nova_populacao)+1 == ag.tam_populacao):
-                                            pai2 = pai1     # caso o tamanho da populacao seja impar, na ultima iteração do while vai sobrar acontecer só 1 torneio
+                                            pai2 = pai1     # caso o tamanho da populacao seja impar, na ultima iteração do while vai sobrar só mais 1 torneio
                                         else:               # entao, o pai2 será o mesmo que o pai1
                                             pai2 = ag.torneio(populacao_atual)
                                         filhos = ag.crossover(pai1, pai2)
@@ -98,7 +96,6 @@ def runToAllCombinations():
                             filesData = []
 
                             folder = f'{instancia}-{elitismo}-{mutacao}-{cruzamento}-{populacao}-{geracoes}' 
-                            # folder = f'{elitismo}-{mutacao}-{cruzamento}-{populacao}-{geracoes}'
                         
                             for filename in os.listdir(f'{os.getcwd()}/{filesFolderName}/{folder}'):
                                 with open(os.path.join(f'{os.getcwd()}/{filesFolderName}/{folder}', filename), 'r') as f:

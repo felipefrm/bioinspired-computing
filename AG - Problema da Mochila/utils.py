@@ -22,7 +22,7 @@ def leArquivos(instancia):
         for line in f:
             utilidades.append(int(line))
 
-    with open(diretorioInstancias + '/' + pesosArq, 'r') as f:
+    with open(diretorioInstancias + '/' + solucaoArq, 'r') as f:
         for line in f:
             solucao.append(int(line))
 
