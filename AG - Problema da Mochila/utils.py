@@ -2,6 +2,10 @@ diretorioInstancias = 'instancias'
 
 def leArquivos(instancia):
 
+    if instancia not in ['01', '02', '03', '04', '05', '06', '07', '08']:
+        print("Falha na leitura do arquivo de instância, por favor, use uma das instâncias disponíveis.")
+        exit()
+
     capacidadeArq = "p" + instancia + "_c.txt"
     pesosArq = "p" + instancia + "_w.txt" 
     utilidadesArq = "p" + instancia + "_p.txt" 

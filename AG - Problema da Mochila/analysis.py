@@ -76,12 +76,8 @@ def runToAllCombinations():
                                     nova_populacao = []
 
                                     while len(nova_populacao) < ag.tam_populacao: 
-                                        pai1 = ag.torneio(populacao_atual)
-                                        if (ag.tam_populacao % 2 != 0 and len(nova_populacao)+1 == ag.tam_populacao):
-                                            pai2 = pai1     # caso o tamanho da populacao seja impar, na ultima iteração do while vai sobrar só mais 1 torneio
-                                        else:               # entao, o pai2 será o mesmo que o pai1
-                                            pai2 = ag.torneio(populacao_atual)
-                                        filhos = ag.crossover(pai1, pai2)
+                                        pai = ag.selecao(populacao_atual, nova_populacao)
+                                        filhos = ag.crossover(pai[0], pai[1])
                                         nova_populacao.extend(filhos)  
                                     
                                     ag.mutacao(nova_populacao)

@@ -3,7 +3,7 @@ from AG import *
 from Mochila import *
 from utils import *
 
-if (len(argv) < 2):
+if len(argv) < 2:
     instancia = '05'
 else:
     instancia = argv[1] # instancia vinda por terminal
@@ -30,13 +30,8 @@ for geracao in range(ag.num_geracoes):
     nova_populacao = []
 
     while len(nova_populacao) < ag.tam_populacao:
-        pai1 = ag.torneio(populacao_atual)
-        if (ag.tam_populacao % 2 != 0 and len(nova_populacao)+1 == ag.tam_populacao):
-            pai2 = pai1     # caso o tamanho da populacao seja impar, na ultima iteração do while vai sobrar acontecer só 1 torneio
-        else:               # entao, o pai2 será o mesmo que o pai1
-            pai2 = ag.torneio(populacao_atual)
-
-        filhos = ag.crossover(pai1, pai2)
+        pai = ag.selecao(populacao_atual, nova_populacao)
+        filhos = ag.crossover(pai[0], pai[1])
         nova_populacao.extend(filhos)  
     
     ag.mutacao(nova_populacao)

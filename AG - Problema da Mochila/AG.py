@@ -56,6 +56,14 @@ class AG():
 
         return vencedor
 
+    def selecao(self, populacao_atual, nova_populacao):
+        pai1 = self.torneio(populacao_atual)
+        if (self.tam_populacao % 2 != 0 and len(nova_populacao)+1 == self.tam_populacao):
+            pai2 = pai1     # caso o tamanho da populacao seja impar, na ultima iteração do while vai sobrar acontecer só 1 torneio
+        else:               # entao, o pai2 será o mesmo que o pai1
+            pai2 = self.torneio(populacao_atual)
+        return [pai1, pai2]
+
     def getMelhorIndividuo(self, populacao):
         # busca o melhor individuo da geração
         avaliacoes = []
