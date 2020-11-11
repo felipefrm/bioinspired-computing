@@ -22,6 +22,10 @@ class AntSystem():
         for i in range(self.population_size):
             self.population.append(Ant(i))
 
+    def restartAnts(self):
+        self.population = []
+        self.initAnts()
+
     def initPheromone(self):
         self.pheromone = np.full((self.population_size, self.population_size), 10 ** -16)
         for i in range(self.population_size):
@@ -31,7 +35,7 @@ class AntSystem():
         dist_sum = 0
         # solution = [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14]
         for i in range(len(solution)-1):
-            print(f'foi de {solution[i]} para {solution[i + 1]} o que custou {self.dist[solution[i]][solution[i+1]]}')
+            # print(f'foi de {solution[i]} para {solution[i + 1]} o que custou {self.dist[solution[i]][solution[i+1]]}')
             dist_sum += self.dist[solution[i]][solution[i+1]] 
         return dist_sum
 
