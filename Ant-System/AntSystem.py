@@ -27,15 +27,11 @@ class AntSystem():
         self.initAnts()
 
     def initPheromone(self):
-        self.pheromone = np.full((self.population_size, self.population_size), 10 ** -16)
-        for i in range(self.population_size):
-            self.pheromone[i][i] = 0
+        self.pheromone = np.full((self.node_count, self.node_count), 10 ** -16)
 
     def calculateFO(self, solution):
         dist_sum = 0
-        # solution = [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14]
         for i in range(len(solution)-1):
-            # print(f'foi de {solution[i]} para {solution[i + 1]} o que custou {self.dist[solution[i]][solution[i+1]]}')
             dist_sum += self.dist[solution[i]][solution[i+1]] 
         return dist_sum
 
@@ -47,7 +43,6 @@ class AntSystem():
             if node not in ant.solution:
                 not_visited.append(node)
                 divisor += ((self.pheromone[ant.current][node] ** self.alpha) * ((1/self.dist[ant.current][node]) ** self.beta)) 
-
        
         for node in not_visited:
             prob_list.append(((self.pheromone[ant.current][node] ** self.alpha) * ((1/self.dist[ant.current][node]) ** self.beta))/divisor)
@@ -57,7 +52,6 @@ class AntSystem():
         while (acumulator < r):
             acumulator += prob_list[count]
             count += 1
-    
         ant.solution.append(not_visited[count-1])
         ant.current = not_visited[count-1] 
 
@@ -67,8 +61,8 @@ class AntSystem():
         return any((solution[i], solution[i + 1]) == (edge[0], edge[1]) for i in range(len(solution) - 1))
 
     def pheromoneUpdate(self):
-        for i in range(self.population_size):
-            for j in range(self.population_size):
+        for i in range(self.node_count):
+            for j in range(self.node_count):
                 sum_pheromone = 0
                 for ant in self.population:
                     if (self.findEdgeInSolution(ant.solution, [i, j])):
