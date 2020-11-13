@@ -4,7 +4,7 @@ from AntSystem import *
 
 dist = readDistFile('LAU15.txt')
 
-ant_system = AntSystem(dist, ITERATIONS, ALPHA, BETA, EVAPORATION_RATE, Q)
+ant_system = AntSystem(dist, len(dist) * POP_MULTIPLIER, ITERATIONS, ALPHA, BETA, EVAPORATION_RATE, Q)
 ant_system.initPheromone()
 ant_system.initAnts()
 

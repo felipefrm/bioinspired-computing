@@ -7,9 +7,11 @@ import matplotlib.pyplot as plt
 
 # parameters
 iterations_list = [25, 50, 100]
+population_multiplier_list = [1, 2, 3]
 alpha_list = [0, 1, 2]
 beta_list = [0, 3, 5]
 evaporation_list = [0.25, 0.5, 0.75]
+
 
 # constants
 number_of_executions = 20

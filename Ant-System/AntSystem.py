@@ -4,9 +4,9 @@ from Ant import *
 
 class AntSystem():
 
-    def __init__(self, dist, iterations, alpha, beta, evaporation_rate, q):
-        self.population_size = len(dist)# mesmas valores, mas por questão
-        self.node_count = len(dist)    # de semantica no codigo, estão alocados 2 variaves 
+    def __init__(self, dist, pop_size, iterations, alpha, beta, evaporation_rate, q):
+        self.population_size = pop_size
+        self.node_count = len(dist)     
         self.dist = dist
         self.iterations = iterations
         self.population = []
@@ -19,8 +19,12 @@ class AntSystem():
         self.best_evaluation = float('inf')
 
     def initAnts(self):
-        for i in range(self.population_size):
-            self.population.append(Ant(i))
+        ratio = self.population_size/self.node_count
+        if (ratio != int(ratio)):
+            exit('O tamanho da população deve ser divisível pela quantidade de vértices.')
+        for j in range(int(ratio)):
+            for i in range(self.node_count):
+                self.population.append(Ant(i))
 
     def restartAnts(self):
         self.population = []
