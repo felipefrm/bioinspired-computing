@@ -94,18 +94,20 @@ def runToAllCombinations():
 
 def readFilesAndGenerateGraphs():
 
+    optimal_data = []
     x_axis = []
+    for filename in os.listdir(f'{os.getcwd()}/{filesFolderName}/{optimalFolderName}'):
+        with open(os.path.join(f'{os.getcwd()}/{filesFolderName}/{optimalFolderName}', filename), 'r') as f:
+            read_file = f.read()
+            optimal_data.append(read_file.count('1'))
+            x_axis.append(filename[:-4])
+
     for iterations in iterations_list:
         for alpha in alpha_list:
             for beta in beta_list:
                 for evaporation_rate in evaporation_list:
+
                     print(f'{iterations}-{alpha}-{beta}-{evaporation_rate}')
-    
-                    optimal_data = []
-                    for filename in os.listdir(f'{os.getcwd()}/{filesFolderName}/{optimalFolderName}'):
-                        with open(os.path.join(f'{os.getcwd()}/{filesFolderName}/{optimalFolderName}', filename), 'r') as f:
-                            read_file = f.read()
-                            optimal_data.append(read_file.count('1'))
                   
                     files_data = []                    
                     folder = f'{iterations}-{alpha}-{beta}-{evaporation_rate}'
@@ -124,7 +126,6 @@ def readFilesAndGenerateGraphs():
                         data.append(add/len(files_data))
                         add = 0
 
-                    x_axis.append(f'{iterations}-{alpha}-{beta}-{evaporation_rate}')
                     plt.rcParams.update({'figure.max_open_warning': 0})
                     fig = plt.figure(figsize=(6, 4))
                     fig.suptitle(folder)
@@ -143,6 +144,9 @@ def readFilesAndGenerateGraphs():
         else:
             colors.append('red')
   
+    print(len(optimal_data))
+    print(len(x_axis))
+
     y_pos = np.arange(len(x_axis))
     fig = plt.figure(figsize=(40,20))
     plt.bar(y_pos, optimal_data, align='center', color=colors)
