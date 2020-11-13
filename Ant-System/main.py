@@ -1,8 +1,10 @@
+from sys import argv
 from utils import *
 from constants import *
 from AntSystem import *
 
-dist = readDistFile('LAU15.txt')
+instanceFile = 'LAU15.txt' if len(argv) < 2 else argv[1]
+dist = readDistFile(instanceFile)
 
 ant_system = AntSystem(dist, len(dist) * POP_MULTIPLIER, ITERATIONS, ALPHA, BETA, EVAPORATION_RATE, Q)
 ant_system.initPheromone()

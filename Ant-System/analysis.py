@@ -7,11 +7,10 @@ import matplotlib.pyplot as plt
 
 # parameters
 iterations_list = [25, 50, 100]
-population_multiplier_list = [1, 2, 3]
+pop_multiplier_list = [0.25, 0.5, 1]
 alpha_list = [0, 1, 2]
 beta_list = [0, 3, 5]
-evaporation_list = [0.25, 0.5, 0.75]
-
+evaporation_list = [0.25, 0.5, 0.75, 1]
 
 # constants
 number_of_executions = 20
@@ -20,10 +19,10 @@ filesFolderName = 'files'
 graphFolderName = 'graphs'
 optimalFolderName = 'optimal'
 
-def fileOperations(best, iterations, alpha, beta, evaporation_rate, count, endAlgorithm):
+def fileOperations(best, pop_multiplier, alpha, beta, evaporation_rate, count, endAlgorithm):
 
-    path = f'{filesFolderName}/{iterations}-{alpha}-{beta}-{evaporation_rate}'
-    optimal = f'{filesFolderName}/{optimalFolderName}/{iterations}-{alpha}-{beta}-{evaporation_rate}'
+    path = f'{filesFolderName}/{pop_multiplier}-{alpha}-{beta}-{evaporation_rate}'
+    optimal = f'{filesFolderName}/{optimalFolderName}/{pop_multiplier}-{alpha}-{beta}-{evaporation_rate}'
     if not endAlgorithm:
         with open(f'{path}/{count}.txt', "a") as f:
             f.write(f'{best}\n')
@@ -39,12 +38,12 @@ def createFolders():
         shutil.rmtree(filesFolderName)
     os.makedirs(filesFolderName)
     
-    for iterations in iterations_list:
+    for pop_multiplier in pop_multiplier_list:
         for alpha in alpha_list:
             for beta in beta_list:
                 for evaporation_rate in evaporation_list:
                     
-                    path = f'{filesFolderName}/{iterations}-{alpha}-{beta}-{evaporation_rate}'
+                    path = f'{filesFolderName}/{pop_multiplier}-{alpha}-{beta}-{evaporation_rate}'
                     os.makedirs(path)
                     optimal = f'{filesFolderName}/{optimalFolderName}'
                     os.makedirs(optimal, exist_ok=True)
@@ -54,11 +53,11 @@ def createFolders():
         os.makedirs(graphFolderName)
 
 
-def runAntSystem(iterations, alpha, beta, evaporation_rate, execution):
+def runAntSystem(pop_multiplier, alpha, beta, evaporation_rate, execution):
     
     dist = readDistFile(instance)
 
-    ant_system = AntSystem(dist, iterations, alpha, beta, evaporation_rate, Q)
+    ant_system = AntSystem(dist, len(dist) * pop_multiplier, ITERATIONS, alpha, beta, evaporation_rate, Q)
     ant_system.initPheromone()
     ant_system.initAnts()
 
@@ -77,21 +76,21 @@ def runAntSystem(iterations, alpha, beta, evaporation_rate, execution):
                 ant_system.best_solution = ant.solution
                 ant_system.best_evaluation = ant.evaluation
         
-        fileOperations(best_evaluation_iter, iterations, alpha, beta, evaporation_rate, execution, 0)
+        fileOperations(best_evaluation_iter, pop_multiplier, alpha, beta, evaporation_rate, execution, 0)
 
         ant_system.pheromoneUpdate()
         ant_system.restartAnts()
 
-    fileOperations(ant_system.best_evaluation, iterations, alpha, beta, evaporation_rate, execution, 1)
+    fileOperations(ant_system.best_evaluation, pop_multiplier, alpha, beta, evaporation_rate, execution, 1)
 
 def runToAllCombinations():
-    for iterations in iterations_list:
+    for pop_multiplier in pop_multiplier_list:
         for alpha in alpha_list:
             for beta in beta_list:
                 for evaporation_rate in evaporation_list:
-                    print(f'{iterations}-{alpha}-{beta}-{evaporation_rate}')
+                    print(f'{pop_multiplier}-{alpha}-{beta}-{evaporation_rate}')
                     for execution in range(number_of_executions):
-                        runAntSystem(iterations, alpha, beta, evaporation_rate, execution)
+                        runAntSystem(pop_multiplier, alpha, beta, evaporation_rate, execution)
 
 
 def readFilesAndGenerateGraphs():
@@ -104,15 +103,15 @@ def readFilesAndGenerateGraphs():
             optimal_data.append(read_file.count('1'))
             x_axis.append(filename[:-4])
 
-    for iterations in iterations_list:
+    for pop_multiplier in pop_multiplier_list:
         for alpha in alpha_list:
             for beta in beta_list:
                 for evaporation_rate in evaporation_list:
 
-                    print(f'{iterations}-{alpha}-{beta}-{evaporation_rate}')
+                    print(f'{pop_multiplier}-{alpha}-{beta}-{evaporation_rate}')
                   
                     files_data = []                    
-                    folder = f'{iterations}-{alpha}-{beta}-{evaporation_rate}'
+                    folder = f'{pop_multiplier}-{alpha}-{beta}-{evaporation_rate}'
                     for filename in os.listdir(f'{os.getcwd()}/{filesFolderName}/{folder}'):
                         with open(os.path.join(f'{os.getcwd()}/{filesFolderName}/{folder}', filename), 'r') as f:
                             arrayLines = []
@@ -146,8 +145,6 @@ def readFilesAndGenerateGraphs():
         else:
             colors.append('red')
   
-    print(len(optimal_data))
-    print(len(x_axis))
 
     y_pos = np.arange(len(x_axis))
     fig = plt.figure(figsize=(40,20))

@@ -1,11 +1,11 @@
-from random import uniform
+from random import uniform, sample
 import numpy as np
 from Ant import *
 
 class AntSystem():
 
     def __init__(self, dist, pop_size, iterations, alpha, beta, evaporation_rate, q):
-        self.population_size = pop_size
+        self.population_size = round(pop_size)
         self.node_count = len(dist)     
         self.dist = dist
         self.iterations = iterations
@@ -20,11 +20,16 @@ class AntSystem():
 
     def initAnts(self):
         ratio = self.population_size/self.node_count
-        if (ratio != int(ratio)):
-            exit('O tamanho da população deve ser divisível pela quantidade de vértices.')
-        for j in range(int(ratio)):
-            for i in range(self.node_count):
-                self.population.append(Ant(i))
+        if (ratio < 1):
+            set_selected_nodes = sample(list(range(self.node_count)), self.population_size)
+            for node in set_selected_nodes:
+                self.population.append(Ant(node))
+        else:
+            if (ratio != int(ratio)):
+                exit('If the population is bigger than the number of nodes, the population size must be divisible by the number of nodes.')
+            for j in range(int(ratio)):
+                for i in range(self.node_count):
+                    self.population.append(Ant(i))
 
     def restartAnts(self):
         self.population = []
