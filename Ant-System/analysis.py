@@ -16,11 +16,12 @@ number_of_executions = 20
 instance = 'LAU15.txt'
 filesFolderName = 'files'
 graphFolderName = 'graphs'
+optimalFolderName = 'optimal'
 
 def fileOperations(best, iterations, alpha, beta, evaporation_rate, count, endAlgorithm):
 
     path = f'{filesFolderName}/{iterations}-{alpha}-{beta}-{evaporation_rate}'
-    optimal = f'{filesFolderName}/optimal/{iterations}-{alpha}-{beta}-{evaporation_rate}'
+    optimal = f'{filesFolderName}/{optimalFolderName}/{iterations}-{alpha}-{beta}-{evaporation_rate}'
     if not endAlgorithm:
         with open(f'{path}/{count}.txt', "a") as f:
             f.write(f'{best}\n')
@@ -43,7 +44,7 @@ def createFolders():
                     
                     path = f'{filesFolderName}/{iterations}-{alpha}-{beta}-{evaporation_rate}'
                     os.makedirs(path)
-                    optimal = f'{filesFolderName}/optimal'
+                    optimal = f'{filesFolderName}/{optimalFolderName}'
                     os.makedirs(optimal, exist_ok=True)
 
 
@@ -93,11 +94,19 @@ def runToAllCombinations():
 
 def readFilesAndGenerateGraphs():
 
+    x_axis = []
     for iterations in iterations_list:
         for alpha in alpha_list:
             for beta in beta_list:
                 for evaporation_rate in evaporation_list:
                     print(f'{iterations}-{alpha}-{beta}-{evaporation_rate}')
+    
+                    optimal_data = []
+                    for filename in os.listdir(f'{os.getcwd()}/{filesFolderName}/{optimalFolderName}'):
+                        with open(os.path.join(f'{os.getcwd()}/{filesFolderName}/{optimalFolderName}', filename), 'r') as f:
+                            read_file = f.read()
+                            optimal_data.append(read_file.count('1'))
+                  
                     files_data = []                    
                     folder = f'{iterations}-{alpha}-{beta}-{evaporation_rate}'
                     for filename in os.listdir(f'{os.getcwd()}/{filesFolderName}/{folder}'):
@@ -115,6 +124,7 @@ def readFilesAndGenerateGraphs():
                         data.append(add/len(files_data))
                         add = 0
 
+                    x_axis.append(f'{iterations}-{alpha}-{beta}-{evaporation_rate}')
                     plt.rcParams.update({'figure.max_open_warning': 0})
                     fig = plt.figure(figsize=(6, 4))
                     fig.suptitle(folder)
@@ -125,6 +135,21 @@ def readFilesAndGenerateGraphs():
                     plt.plot(data)
                     plt.legend(['Optimal solution', 'Best individual'], loc='upper right', fontsize='xx-small')
                     fig.savefig(f'{graphFolderName}/{folder}.png', dpi=fig.dpi)
+
+    colors = []
+    for value in optimal_data:
+        if value == number_of_executions:
+            colors.append('blue')
+        else:
+            colors.append('red')
+  
+    y_pos = np.arange(len(x_axis))
+    fig = plt.figure(figsize=(40,20))
+    plt.bar(y_pos, optimal_data, align='center', color=colors)
+    plt.xticks(y_pos, x_axis, rotation=90, fontsize=14)
+    plt.ylabel('how many times was found the optimal solution', fontsize=18)
+    plt.title('Optimal x Combination', fontsize=24)
+    fig.savefig(f'{graphFolderName}/{optimalFolderName}.png', dpi=fig.dpi) 
 
 
 print("Creating directories...")
