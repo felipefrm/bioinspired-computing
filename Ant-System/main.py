@@ -22,7 +22,6 @@ for t in range(ant_system.iterations):
             best_evaluation_iter = ant.evaluation
 
         if (ant.evaluation < ant_system.best_evaluation):
-            print(f'Iteration: {t}\tSolution: {ant.solution}\tEvaluation: {ant.evaluation}')
             ant_system.best_solution = ant.solution
             ant_system.best_evaluation = ant.evaluation
     
@@ -31,5 +30,6 @@ for t in range(ant_system.iterations):
     ant_system.pheromoneUpdate()
     ant_system.restartAnts()
 
-
+print(f'\nBest evaluation of execution {t}: {ant_system.best_evaluation}')
+print(f'Solution: {ant_system.best_solution}')
     
