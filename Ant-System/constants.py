@@ -1,5 +1,5 @@
 ITERATIONS = 50
-POP_MULTIPLIER = 1   # escalar que sera multiplicado pela quantidade de nos da instancia para determinar o tamanho da populacao
+POP_MULTIPLIER = 1
 ALPHA = 1
 BETA = 5
 INIT_PHEROMONE_VALUE = 10 ** -16
