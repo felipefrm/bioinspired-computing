@@ -26,7 +26,6 @@ class AG():
         for ind in populacao:
             (ind.fitness, ind.viavel) = func_obj(ind.solucao, mochila)
 
-
     def torneio(self, populacao):
         # o ultimo individuo não terá adversário, logo é automaticamente escolhido
         if len(populacao) == 1:

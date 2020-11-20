@@ -30,6 +30,6 @@ for t in range(ant_system.iterations):
     ant_system.pheromoneUpdate()
     ant_system.restartAnts()
 
-print(f'\nBest evaluation of execution {t}: {ant_system.best_evaluation}')
+print(f'\nBest evaluation of execution: {ant_system.best_evaluation}')
 print(f'Solution: {ant_system.best_solution}')
     
