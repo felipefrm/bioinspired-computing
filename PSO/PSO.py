@@ -33,19 +33,22 @@ class PSO():
         particle.fitness = func_obj(particle.x)
 
     def updateParticleVelocity(self, particle):
+        new_velocity = []
         for j in range(len(particle.x)):
             r1 = random()
             r2 = random()
-            pbest = [self.c1*r1 * (x - particle.x[j]) for x in particle.pbest[SOLUTION]]
-            gbest = [self.c2*r2 * (x - particle.x[j]) for x in particle.gbest[SOLUTION]]
+            pbest = self.c1*r1 * (particle.pbest[SOLUTION][j] - particle.x[j])
+            gbest = self.c2*r2 * (particle.gbest[SOLUTION][j] - particle.x[j])
             v = self.w*particle.v[j] + pbest + gbest
-            particle.v[j] = v
+            new_velocity.append(v)
+        return new_velocity
 
     def updateParticleSolution(self, particle):
-        particle.x = [x + y for x, y in zip(particle.x, particle.v)]
+        new_solution = [x + y for x, y in zip(particle.x, particle.v)]
         limits = [[X1MIN, X1MAX], [X2MIN, X2MAX], [X3MIN, X3MAX]]
         for i in range(len(particle.x)):
-            if particle.x[i] < limits[i][0]:
-                particle.x[i] = limits[i][0]
-            elif particle.x[i] > limits[i][1]:
-                particle.x[i] = limits[i][1]
+            if new_solution[i] < limits[i][0]:
+                new_solution[i] = limits[i][0]
+            elif new_solution[i] > limits[i][1]:
+                new_solution[i] = limits[i][1]
+        return new_solution
