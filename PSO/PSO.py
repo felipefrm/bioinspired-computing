@@ -19,15 +19,19 @@ class PSO():
             x3 = uniform(X3MIN, X3MAX)
             self.swarm.append(Particle([x1, x2, x3]))
 
-    def setTopology(self):
-        for i, particle in enumerate(self.swarm):
-            neighbors_index = [(i-1)%self.swarm_size, (i+1)%self.swarm_size]
-            neighbors1 = self.swarm[neighbors_index[0]]
-            neighbors2 = self.swarm[neighbors_index[1]]
-            if neighbors1.fitness < neighbors2.fitness:
-                particle.gbest = [neighbors1.fitness, neighbors1.x]
-            else:
-                particle.gbest = [neighbors2.fitness, neighbors2.x]
+    def setNeighborGBest(self, particle, idx):
+        neighbors_index = [(idx-1)%self.swarm_size, (idx+1)%self.swarm_size]
+        neighbors1 = self.swarm[neighbors_index[0]].pbest
+        neighbors2 = self.swarm[neighbors_index[1]].pbest
+        # print(particle.pbest[FITNESS], neighbors1[FITNESS], neighbors2[FITNESS])
+        if neighbors1[FITNESS] < neighbors2[FITNESS] and neighbors1[FITNESS] < particle.pbest[FITNESS]:
+            particle.gbest = [neighbors1[FITNESS], neighbors1[SOLUTION]]
+        elif neighbors2[FITNESS] < neighbors1[FITNESS] and neighbors2[FITNESS] < particle.pbest[FITNESS]:
+            particle.gbest = [neighbors2[FITNESS], neighbors2[SOLUTION]]
+        else:
+            particle.gbest = [particle.pbest[FITNESS], particle.pbest[SOLUTION]]
+        # print(particle.gbest)
+        # exit()
 
     def calculateFitness(self, particle):
         particle.fitness = func_obj(particle.x)
@@ -52,3 +56,13 @@ class PSO():
             elif new_solution[i] > limits[i][1]:
                 new_solution[i] = limits[i][1]
         return new_solution
+
+    def getBestSolution(self):
+        fitness = []
+        for idx, particle in enumerate(self.swarm):
+            print(f'Particle {idx}\t->\tFitness: {particle.pbest[FITNESS]}\tSolution: {particle.pbest[SOLUTION]}')
+            fitness.append(abs(particle.pbest[FITNESS]))
+
+        val, idx = min((val, idx) for (idx, val) in enumerate(fitness))
+
+        return self.swarm[idx]

@@ -5,10 +5,10 @@ X2MIN = 0
 X2MAX = 25.6
 X3MIN = 0
 X3MAX = 5
-SWARM_SIZE = 50
+SWARM_SIZE = 100
 ITERATIONS = 100
-C1 = 2  #0.5 TO 2.5
-C2 = 2  #0.5 TO 2.5
+C1 = 1.5  #0.5 TO 2.5
+C2 = 1.5  #0.5 TO 2.5
 W = 0.9
 
 #optimal
