@@ -5,8 +5,9 @@ from Particle import Particle
 
 class PSO():
 
-    def __init__(self, swarm_size, w, c1, c2):
+    def __init__(self, swarm_size, iterations, w, c1, c2):
         self.swarm_size = swarm_size
+        self.iterations = iterations
         self.w = w
         self.c1 = c1
         self.c2 = c2
@@ -23,15 +24,12 @@ class PSO():
         neighbors_index = [(idx-1)%self.swarm_size, (idx+1)%self.swarm_size]
         neighbors1 = self.swarm[neighbors_index[0]].pbest
         neighbors2 = self.swarm[neighbors_index[1]].pbest
-        # print(particle.pbest[FITNESS], neighbors1[FITNESS], neighbors2[FITNESS])
         if neighbors1[FITNESS] < neighbors2[FITNESS] and neighbors1[FITNESS] < particle.pbest[FITNESS]:
             particle.gbest = [neighbors1[FITNESS], neighbors1[SOLUTION]]
         elif neighbors2[FITNESS] < neighbors1[FITNESS] and neighbors2[FITNESS] < particle.pbest[FITNESS]:
             particle.gbest = [neighbors2[FITNESS], neighbors2[SOLUTION]]
         else:
             particle.gbest = [particle.pbest[FITNESS], particle.pbest[SOLUTION]]
-        # print(particle.gbest)
-        # exit()
 
     def calculateFitness(self, particle):
         particle.fitness = func_obj(particle.x)
@@ -66,3 +64,14 @@ class PSO():
         val, idx = min((val, idx) for (idx, val) in enumerate(fitness))
 
         return self.swarm[idx]
+
+    def getMetricsOfIteration(self):
+        fitness = []
+        for idx, particle in enumerate(self.swarm):
+            fitness.append(abs(particle.fitness))
+
+        best = min(fitness)
+        worst = max(fitness)
+        average = sum(fitness)/len(fitness)
+
+        return (best, worst, average)
