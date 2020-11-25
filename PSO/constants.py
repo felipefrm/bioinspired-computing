@@ -1,9 +1,9 @@
 #parameters
 SWARM_SIZE = 30
-ITERATIONS = 50
-C1 = 1.5  #0.5 TO 2.5
-C2 = 1.5  #0.5 TO 2.5
-W = 0.9   #0 TO 1.0
+ITERATIONS = 100
+C1 = 0.5  #0.5 TO 2.5
+C2 = 2.5  #0.5 TO 2.5
+W = 0.5   #0 TO 1.0
 
 # search space
 X1MIN = 0.1

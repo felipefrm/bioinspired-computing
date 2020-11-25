@@ -96,16 +96,24 @@ def readFilesAndGenerateGraphs():
 
                         filesData.append(arrayLines)
 
-                    dados = np.zeros((len(filesData[0]), len(filesData[0][0])))
+                    data_array = np.zeros((len(filesData[0]), len(filesData[0][0])))
 
                     summation = 0
                     for iteration in range(len(filesData[0])):
                         for data in range(len(filesData[0][0])):
                             for file in range(len(filesData)):   # para cada uma das n execucoes
                                 summation += float(filesData[file][iteration][data])
-                            dados[iteration][data] = summation/len(filesData)
+                            data_array[iteration][data] = summation/len(filesData)
                             summation = 0
-                    average_fitness.append([folder, dados[len(filesData[0])-1][0]])    
+                    
+                    summation_best_fitness = 0
+                    fitness = []
+                    for file in filesData:
+                        for iteration in file:
+                            fitness.append(abs(float(iteration[0])))
+                        val, idx = min((val, idx) for (idx, val) in enumerate(fitness))
+                        summation_best_fitness += val
+                    average_fitness.append([folder, summation_best_fitness/len(filesData)])   
 
                     # PLOTA E SALVA OS GRAFICOS
                     plt.rcParams.update({'figure.max_open_warning': 0})
@@ -114,13 +122,13 @@ def readFilesAndGenerateGraphs():
                     plt.axhline(y=0, linewidth=0.5, color='r', linestyle='--')
                     plt.xlabel('Iteration')
                     plt.ylabel('Fitness')
-                    plt.plot(dados)
+                    plt.plot(data_array)
                     plt.legend(['Best Solution', 'Best Particle', 'Worst Particle', 'Average Particle'], loc='upper right', fontsize='xx-small')
                     fig.savefig(f'{graphFolderName}/{folder}.png', dpi=fig.dpi)
 
     average_fitness = sorted(average_fitness, key=lambda x: x[1])
     with open(f'{filesFolderName}/fitness.txt', 'w') as f:
-        for item in average_fitness[::-1]:
+        for item in average_fitness:
             f.write(f'{item[0]}\t\t{item[1]}\n')
 
 start = time.time()
