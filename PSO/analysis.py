@@ -107,8 +107,8 @@ def readFilesAndGenerateGraphs():
                             summation = 0
                     
                     summation_best_fitness = 0
-                    fitness = []
                     for file in filesData:
+                        fitness = []
                         for iteration in file:
                             fitness.append(abs(float(iteration[0])))
                         val, idx = min((val, idx) for (idx, val) in enumerate(fitness))
@@ -132,10 +132,10 @@ def readFilesAndGenerateGraphs():
             f.write(f'{item[0]}\t\t{item[1]}\n')
 
 start = time.time()
-print("Creating directories...")
-createFolders()
-print("Running algorithm...")
-runToAllCombinations()
+# print("Creating directories...")
+# createFolders()
+# print("Running algorithm...")
+# runToAllCombinations()
 print("Reading output files and generating graphs...")
 readFilesAndGenerateGraphs()
 end = time.time()
